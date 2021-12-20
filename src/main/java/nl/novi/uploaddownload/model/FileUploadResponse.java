@@ -1,4 +1,4 @@
-package nl.novi.uploaddownload.dto;
+package nl.novi.uploaddownload.model;
 
 public class FileUploadResponse {
 

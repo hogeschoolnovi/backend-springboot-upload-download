@@ -1,6 +1,6 @@
 package nl.novi.uploaddownload.fileUploadDownloadControllers;
 
-import nl.novi.uploaddownload.dto.FileUploadResponse;
+import nl.novi.uploaddownload.model.FileUploadResponse;
 import nl.novi.uploaddownload.service.FileStorageService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -14,8 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.http.HttpResponse;
-import java.time.format.SignStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,30 +89,7 @@ public class UploadDownloadWithFileSystemController {
         });
 
         return uploadResponseList;
+
     }
 
-    @GetMapping("zipDownload")
-    public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
-
-        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
-            Arrays.asList(files).stream().forEach(file -> {
-                Resource resource = fileStorageService.downLoadFile(file);
-                ZipEntry zipEntry = new ZipEntry(resource.getFilename());
-                try {
-                    zipEntry.setSize(resource.contentLength());
-                    zos.putNextEntry(zipEntry);
-
-                    StreamUtils.copy(resource.getInputStream(), zos);
-
-                    zos.closeEntry();
-                } catch (IOException e) {
-                    System.out.println("some exception while zipping");
-                }
-            });
-            zos.finish();
-        }
-
-        response.setStatus(200);
-        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=zipfile");
-    }
 }
