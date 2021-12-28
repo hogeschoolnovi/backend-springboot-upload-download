@@ -92,4 +92,29 @@ public class UploadDownloadWithFileSystemController {
 
     }
 
+    @GetMapping("zipDownload")
+    public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
+
+        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
+            Arrays.asList(files).stream().forEach(file -> {
+                Resource resource = fileStorageService.downLoadFile(file);
+                ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+                try {
+                    zipEntry.setSize(resource.contentLength());
+                    zos.putNextEntry(zipEntry);
+
+                    StreamUtils.copy(resource.getInputStream(), zos);
+
+                    zos.closeEntry();
+                } catch (IOException e) {
+                    System.out.println("some exception while zipping");
+                }
+            });
+            zos.finish();
+        }
+
+        response.setStatus(200);
+        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=zipfile");
+    }
+
 }
