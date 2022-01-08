@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+@CrossOrigin
 @RestController
 public class UploadDownloadWithFileSystemController {
     private FileStorageService fileStorageService;
@@ -66,6 +67,14 @@ public class UploadDownloadWithFileSystemController {
 //        for showing image in browser
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename()).body(resource);
     }
+
+    //    get all names in directory
+    @GetMapping("/download/allNames")
+    List<String> downLoadMultipleFile( HttpServletRequest request) {
+
+        return fileStorageService.downLoad();
+
+}
 
 //    post for multiple uploads
     @PostMapping("/multiple/upload")

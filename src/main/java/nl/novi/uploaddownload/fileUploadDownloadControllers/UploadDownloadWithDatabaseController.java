@@ -19,11 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-
+@CrossOrigin
 @RestController
 public class UploadDownloadWithDatabaseController {
 
@@ -135,5 +136,8 @@ public class UploadDownloadWithDatabaseController {
         response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=zipfile");
     }
 
-
+    @GetMapping("/getAll/db")
+    public Collection<FileDocument> getAllFromDB(){
+        return databaseService.getALlFromDB();
+    }
 }

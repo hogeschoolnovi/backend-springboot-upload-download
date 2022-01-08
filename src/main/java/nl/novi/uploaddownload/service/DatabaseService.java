@@ -1,5 +1,6 @@
 package nl.novi.uploaddownload.service;
 
+import nl.novi.uploaddownload.model.FileDocument;
 import nl.novi.uploaddownload.repository.DocFileDao;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -11,6 +12,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 public class DatabaseService {
@@ -38,5 +40,9 @@ public class DatabaseService {
         } else {
             throw new RuntimeException("the file doesn't exist or not readable");
         }
+    }
+
+    public Collection<FileDocument> getALlFromDB() {
+        return doc.findAll();
     }
 }

@@ -8,12 +8,15 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,5 +73,20 @@ public class FileStorageService {
         } else {
             throw new RuntimeException("the file doesn't exist or not readable");
         }
+    }
+
+    public List<String> downLoad() {
+        // Directory path here
+        var list = new ArrayList<String>();
+        File folder = new File(fileStorageLocation);
+        File[] listOfFiles = folder.listFiles();
+
+        for(int i = 0; i < listOfFiles.length; i++){
+            if(listOfFiles[i].isFile()){
+                String name = listOfFiles[i].getName();
+               list.add(name);
+            }
+        }
+        return list;
     }
 }
