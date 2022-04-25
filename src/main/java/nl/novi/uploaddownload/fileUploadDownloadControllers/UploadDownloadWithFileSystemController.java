@@ -17,13 +17,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @CrossOrigin
 @RestController
 public class UploadDownloadWithFileSystemController {
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
     public UploadDownloadWithFileSystemController(FileStorageService fileStorageService) {
         this.fileStorageService = fileStorageService;
@@ -40,9 +41,7 @@ public class UploadDownloadWithFileSystemController {
 
         String contentType = file.getContentType();
 
-        FileUploadResponse response = new FileUploadResponse(fileName, contentType, url );
-
-        return response;
+        return new FileUploadResponse(fileName, contentType, url );
     }
 
 //    get for single download
@@ -70,7 +69,7 @@ public class UploadDownloadWithFileSystemController {
 
     //    get all names in directory
     @GetMapping("/download/allNames")
-    List<String> downLoadMultipleFile( HttpServletRequest request) {
+    List<String> downLoadMultipleFile() {
 
         return fileStorageService.downLoad();
 
@@ -84,7 +83,7 @@ public class UploadDownloadWithFileSystemController {
             throw new RuntimeException("to many files");
         }
         List<FileUploadResponse> uploadResponseList = new ArrayList<>();
-        Arrays.asList(files).stream().forEach(file -> {
+        Arrays.stream(files).forEach(file -> {
             String fileName = fileStorageService.storeFile(file);
 
             // next line makes url. example "http://localhost:8080/download/naam.jpg"
@@ -105,9 +104,9 @@ public class UploadDownloadWithFileSystemController {
     public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
 
         try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
-            Arrays.asList(files).stream().forEach(file -> {
+            Arrays.stream(files).forEach(file -> {
                 Resource resource = fileStorageService.downLoadFile(file);
-                ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+                ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(resource.getFilename()));
                 try {
                     zipEntry.setSize(resource.contentLength());
                     zos.putNextEntry(zipEntry);

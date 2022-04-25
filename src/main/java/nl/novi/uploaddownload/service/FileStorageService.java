@@ -5,7 +5,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -17,7 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class FileStorageService {
@@ -26,7 +25,7 @@ public class FileStorageService {
 //    private static String storageLocation = "/Users/vanoo/IdeaProjects/upload-download/uploads"
     @Value("${my.upload_location}")
     private Path fileStoragePath;
-    private String fileStorageLocation;
+    private final String fileStorageLocation;
 
     public FileStorageService(@Value("${my.upload_location}") String fileStorageLocation) {
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
@@ -43,7 +42,7 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
 
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
         Path filePath = Paths.get(fileStoragePath + "\\" + fileName);
 
@@ -81,7 +80,7 @@ public class FileStorageService {
         File folder = new File(fileStorageLocation);
         File[] listOfFiles = folder.listFiles();
 
-        for(int i = 0; i < listOfFiles.length; i++){
+        for(int i = 0; i < Objects.requireNonNull(listOfFiles).length; i++){
             if(listOfFiles[i].isFile()){
                 String name = listOfFiles[i].getName();
                list.add(name);

@@ -7,16 +7,12 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
 import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
 public class DatabaseService {
-    private DocFileDao doc;
+    private final DocFileDao doc;
 
     public DatabaseService(DocFileDao doc){
         this.doc = doc;

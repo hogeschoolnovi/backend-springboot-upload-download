@@ -17,10 +17,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,8 +25,8 @@ import java.util.zip.ZipOutputStream;
 @RestController
 public class UploadDownloadWithDatabaseController {
 
-    private DocFileDao docFileDao;
-    private DatabaseService databaseService;
+    private final DocFileDao docFileDao;
+    private final DatabaseService databaseService;
 
     public UploadDownloadWithDatabaseController(DocFileDao docFileDao, DatabaseService databaseService) {
         this.databaseService = databaseService;
@@ -39,7 +36,7 @@ public class UploadDownloadWithDatabaseController {
     @PostMapping("single/uploadDb")
     FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
 
-        String name = StringUtils.cleanPath(file.getOriginalFilename());
+        String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
@@ -51,9 +48,7 @@ public class UploadDownloadWithDatabaseController {
 
         String contentType = file.getContentType();
 
-        FileUploadResponse response = new FileUploadResponse(name, contentType, url );
-
-        return response;
+        return new FileUploadResponse(name, contentType, url );
     }
 
     //    get for single download
@@ -83,9 +78,9 @@ public class UploadDownloadWithDatabaseController {
         }
 
         List<FileUploadResponse> uploadResponseList = new ArrayList<>();
-        Arrays.asList(files).stream().forEach(file -> {
+        Arrays.stream(files).forEach(file -> {
 
-            String name = StringUtils.cleanPath(file.getOriginalFilename());
+            String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             FileDocument fileDocument = new FileDocument();
             fileDocument.setFileName(name);
             try {
@@ -115,9 +110,9 @@ public class UploadDownloadWithDatabaseController {
 
 
         try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
-            Arrays.asList(files).stream().forEach(file -> {
+            Arrays.stream(files).forEach(file -> {
                 Resource resource = databaseService.downLoadFileDatabase(file);
-                ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+                ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(resource.getFilename()));
                 try {
                     zipEntry.setSize(resource.contentLength());
                     zos.putNextEntry(zipEntry);
