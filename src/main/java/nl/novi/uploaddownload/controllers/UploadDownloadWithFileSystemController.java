@@ -3,6 +3,8 @@ package nl.novi.uploaddownload.controllers;
 import nl.novi.uploaddownload.FileUploadResponse.FileUploadResponse;
 import nl.novi.uploaddownload.services.DatabaseService;
 import nl.novi.uploaddownload.services.FileStorageService;
+import nl.novi.uploaddownload.models.FileUploadResponse;
+import nl.novi.uploaddownload.services.FileStorageService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
