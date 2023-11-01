@@ -21,9 +21,7 @@ import java.util.Objects;
 @Service
 public class FileStorageService {
 
-//    The next line is also possible instead of line 14 and 15
-//    private static String storageLocation = "/Users/vanoo/IdeaProjects/upload-download/uploads"
-    @Value("${my.upload_location}")
+
     private Path fileStoragePath;
     private final String fileStorageLocation;
 
@@ -44,7 +42,7 @@ public class FileStorageService {
 
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
-        Path filePath = Paths.get(fileStoragePath + "\\" + fileName);
+        Path filePath = Paths.get(fileStoragePath + File.separator + fileName);
 
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);

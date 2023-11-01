@@ -2,11 +2,10 @@ package nl.novi.uploaddownload.services;
 
 import nl.novi.uploaddownload.model.FileDocument;
 import nl.novi.uploaddownload.FileUploadResponse.FileUploadResponse;
-import nl.novi.uploaddownload.repositories.DocFileDao;
+import nl.novi.uploaddownload.repositories.DocFileRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
@@ -14,8 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -24,9 +23,9 @@ import java.util.zip.ZipOutputStream;
 
 @Service
 public class DatabaseService {
-    private final DocFileDao doc;
+    private final DocFileRepository doc;
 
-    public DatabaseService(DocFileDao doc){
+    public DatabaseService(DocFileRepository doc){
         this.doc = doc;
     }
 
@@ -46,7 +45,7 @@ public class DatabaseService {
 
     }
 
-    public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request){
+    public FileDocument singleFileDownload(String fileName, HttpServletRequest request){
 
        FileDocument document = doc.findByFileName(fileName);
 
@@ -59,7 +58,7 @@ public class DatabaseService {
 //        for download attachment use next line
 //        return ResponseEntity.ok().contentType(contentType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
 //        for showing image in browser
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+        return document;
 
     }
 

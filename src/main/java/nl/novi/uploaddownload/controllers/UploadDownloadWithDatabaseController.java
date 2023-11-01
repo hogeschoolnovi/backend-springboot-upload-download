@@ -3,13 +3,14 @@ package nl.novi.uploaddownload.controllers;
 import nl.novi.uploaddownload.model.FileDocument;
 import nl.novi.uploaddownload.FileUploadResponse.FileUploadResponse;
 import nl.novi.uploaddownload.services.DatabaseService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,7 +25,7 @@ public class UploadDownloadWithDatabaseController {
     }
 
     @PostMapping("single/uploadDb")
-    FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
 
 
         // next line makes url. example "http://localhost:8080/download/naam.jpg"
@@ -40,7 +41,10 @@ public class UploadDownloadWithDatabaseController {
     @GetMapping("/downloadFromDB/{fileName}")
     ResponseEntity<byte[]> downLoadSingleFile(@PathVariable String fileName, HttpServletRequest request) {
 
-        return databaseService.singleFileDownload(fileName, request);
+        FileDocument document = databaseService.singleFileDownload(fileName, request);
+
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
     }
 
 //    post for multiple uploads to database
@@ -56,7 +60,7 @@ public class UploadDownloadWithDatabaseController {
     }
 
     @GetMapping("zipDownload/db")
-    public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
+    public void zipDownload(@RequestBody String[] files, HttpServletResponse response) throws IOException {
 
         databaseService.getZipDownload(files, response);
 

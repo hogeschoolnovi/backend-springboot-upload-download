@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class UploadDownloadWithFileSystemController {
 
 //    post for single upload
     @PostMapping("single/upload")
-    FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file){
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file){
 
         String fileName = fileStorageService.storeFile(file);
 
@@ -99,23 +99,23 @@ public class UploadDownloadWithFileSystemController {
         return uploadResponseList;
 
     }
-
-    @GetMapping("zipDownload")
-    public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
-
-        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
-            Arrays.stream(files).forEach(file -> {
-                try {
-                    databaseService.createZipEntry(file, zos);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            zos.finish();
-        }
-
-        response.setStatus(200);
-        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=zipfile");
-    }
+//
+//    @GetMapping("zipDownload")
+//    public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
+//
+//        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
+//            Arrays.stream(files).forEach(file -> {
+//                try {
+//                    databaseService.createZipEntry(file, zos);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//            zos.finish();
+//        }
+//
+//        response.setStatus(200);
+//        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=zipfile");
+//    }
 
 }
